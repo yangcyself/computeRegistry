@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { signOut } from "./actions";
+import { revokeSession, signOut } from "./actions";
 import { createClient } from "../lib/supabase/server";
 
 export default async function HomePage() {
@@ -59,6 +59,13 @@ export default async function HomePage() {
                   </div>
                   <div className="card-actions">
                     <Link className="secondary-button" href={`/resources/${resource.id}`}>Edit</Link>
+                    {occupied && session ? (
+                      <form action={revokeSession}>
+                        <input type="hidden" name="session_id" value={session.id} />
+                        <input type="hidden" name="reason" value="Revoked by registry owner" />
+                        <button className="danger-button" type="submit">Revoke assignment</button>
+                      </form>
+                    ) : null}
                     <Link className="button-link" href={`/sessions/new?resource=${resource.id}`}>New session</Link>
                   </div>
                 </div>
