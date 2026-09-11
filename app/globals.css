@@ -5,73 +5,53 @@
   color: #f5f7fa;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: #0b0d10; }
+body { min-height: 100vh; }
+a { color: inherit; }
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
 
-html,
-body {
-  margin: 0;
-  min-height: 100%;
-  background: #0b0d10;
-}
+.shell { width: min(1100px, calc(100% - 32px)); margin: 0 auto; padding: 56px 0 80px; }
+.hero { max-width: 760px; margin-bottom: 40px; }
+.topbar, .resource-heading, .prompt-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.eyebrow, .label { text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; color: #9da7b3; }
+h1 { margin: 10px 0 16px; font-size: clamp(2.4rem, 6vw, 4.8rem); line-height: .98; }
+h2 { margin: 6px 0 16px; }
+.lede { font-size: 1.05rem; line-height: 1.6; color: #c6ccd4; }
 
-body {
-  min-height: 100vh;
-}
+.panel, .resource-card, .auth-card, .empty-state { border: 1px solid #242a31; border-radius: 18px; background: #11151a; }
+.panel { padding: 24px; margin-bottom: 24px; }
+.resource-list { display: grid; gap: 16px; }
+.resource-card { padding: 22px; }
+.resource-card p { color: #aab2bc; }
+.resource-heading strong { margin-left: 10px; font-size: 1.1rem; }
+.slug { margin-left: 10px; color: #7f8995; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+.status-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.status-dot.free { background: #45d483; }
+.status-dot.busy { background: #f4b942; }
+.resource-meta { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 18px 0 0; }
+.resource-meta div { padding: 12px; background: #0b0d10; border-radius: 12px; }
+.resource-meta dt { color: #7f8995; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.resource-meta dd { margin: 6px 0 0; }
 
-.shell {
-  width: min(1100px, calc(100% - 32px));
-  margin: 0 auto;
-  padding: 72px 0;
-}
+.resource-form, .session-form { display: grid; gap: 12px; }
+.resource-form input, .resource-form textarea, .session-form input, .auth-card input { width: 100%; padding: 12px 14px; border: 1px solid #303741; border-radius: 10px; background: #0b0d10; color: #fff; }
+.session-form label, .auth-card label { display: grid; gap: 7px; color: #c6ccd4; }
+.checkbox-row { grid-template-columns: auto 1fr !important; align-items: center; }
+.checkbox-row input { width: auto; }
+button, .button-link { border: 0; border-radius: 10px; padding: 11px 15px; background: #f5f7fa; color: #0b0d10; font-weight: 700; text-decoration: none; }
+.secondary-button { background: #20262d; color: #f5f7fa; }
 
-.hero {
-  max-width: 760px;
-  margin-bottom: 40px;
-}
+.auth-shell { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+.auth-card { width: min(420px,100%); padding: 28px; display: grid; gap: 16px; }
+.auth-card h1 { font-size: 2.5rem; }
+.error-text { color: #ff8888; }
+.empty-state { padding: 32px; color: #aab2bc; text-align: center; }
+.session-layout { display: grid; gap: 20px; }
+.prompt-panel pre { white-space: pre-wrap; word-break: break-word; background: #090b0e; border: 1px solid #252b32; border-radius: 12px; padding: 18px; color: #d8dee6; line-height: 1.55; overflow-x: auto; }
 
-.eyebrow,
-.label {
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.75rem;
-  color: #9da7b3;
-}
-
-h1 {
-  margin: 12px 0 16px;
-  font-size: clamp(2.5rem, 7vw, 5.5rem);
-  line-height: 0.95;
-}
-
-.lede {
-  font-size: 1.15rem;
-  line-height: 1.6;
-  color: #c6ccd4;
-}
-
-.status-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 16px;
-}
-
-.card {
-  padding: 24px;
-  border: 1px solid #242a31;
-  border-radius: 18px;
-  background: #11151a;
-}
-
-.card strong {
-  display: block;
-  margin: 12px 0 10px;
-  font-size: 1.3rem;
-}
-
-.card p {
-  margin: 0;
-  color: #aab2bc;
-  line-height: 1.5;
+@media (max-width: 700px) {
+  .topbar, .resource-heading, .prompt-heading { align-items: flex-start; flex-direction: column; }
+  .resource-meta { grid-template-columns: 1fr; }
 }
