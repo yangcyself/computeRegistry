@@ -29,7 +29,20 @@ export async function createSession(_: SessionState, formData: FormData): Promis
     p_allow_contributions: allowContributions,
     p_expires_at: expiresAt,
   });
-  if (error || !data?.[0]) return { error: error?.message ?? "Unable to create session." };
+
+  if (error || !data?.[0]) {
+    const message = error?.message ?? "Unable to create session.";
+    if (
+      message.includes("claimed or active session") ||
+      message.includes("one_live_session_per_resource")
+    ) {
+      return {
+        error:
+          "This resource already has a claimed or active session. Release or revoke that session before creating another.",
+      };
+    }
+    return { error: message };
+  }
 
   const h = await headers();
   const proto = h.get("x-forwarded-proto") ?? "https";
