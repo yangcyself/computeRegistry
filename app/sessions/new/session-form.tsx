@@ -1,5 +1,6 @@
 'use client';
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { createSession, type SessionState } from "./actions";
 
@@ -13,7 +14,7 @@ export function SessionForm({ resourceId, resourceName }: { resourceId: string; 
     if (!state.prompt) return;
     await navigator.clipboard.writeText(state.prompt);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    setTimeout(() => setCopied(false), 2500);
   }
 
   return (
@@ -34,7 +35,10 @@ export function SessionForm({ resourceId, resourceName }: { resourceId: string; 
         <section className="panel prompt-panel">
           <div className="prompt-heading">
             <div><p className="eyebrow">Agent handoff</p><h2>Copy this prompt</h2></div>
-            <button type="button" onClick={copyPrompt}>{copied ? "Copied" : "Copy"}</button>
+            <div className="handoff-actions">
+              <button type="button" onClick={copyPrompt}>{copied ? "Copied ✓" : "Copy instructions"}</button>
+              <Link className="secondary-button" href="/">Back to dashboard</Link>
+            </div>
           </div>
           <pre>{state.prompt}</pre>
         </section>
