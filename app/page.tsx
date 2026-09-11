@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createResource, signOut } from "./actions";
+import { signOut } from "./actions";
 import { createClient } from "../lib/supabase/server";
 
 export default async function HomePage() {
@@ -36,22 +36,15 @@ export default async function HomePage() {
           <p className="eyebrow">Personal compute control plane</p>
           <h1>Compute Registry</h1>
         </div>
-        <form action={signOut}><button className="secondary-button" type="submit">Sign out</button></form>
+        <div className="topbar-actions">
+          <Link className="button-link" href="/resources/new">Add resource</Link>
+          <form action={signOut}><button className="secondary-button" type="submit">Sign out</button></form>
+        </div>
       </header>
-
-      <section className="panel">
-        <h2>Add resource</h2>
-        <form action={createResource} className="resource-form">
-          <input name="name" placeholder="Name, e.g. Lab GPU 03" required />
-          <input name="slug" placeholder="slug, e.g. lab-gpu-03" pattern="[a-z0-9][a-z0-9-]*" required />
-          <textarea name="description" placeholder="Short description" rows={2} />
-          <button type="submit">Add resource</button>
-        </form>
-      </section>
 
       <section className="resource-list">
         {(resources ?? []).length === 0 ? (
-          <div className="empty-state">No resources yet. Add your first compute resource above.</div>
+          <div className="empty-state">No resources yet. Add your first compute resource.</div>
         ) : (
           (resources ?? []).map((resource) => {
             const session = latestByResource.get(resource.id);
@@ -64,7 +57,10 @@ export default async function HomePage() {
                     <strong>{resource.name}</strong>
                     <span className="slug">{resource.slug}</span>
                   </div>
-                  <Link className="button-link" href={`/sessions/new?resource=${resource.id}`}>New session</Link>
+                  <div className="card-actions">
+                    <Link className="secondary-button" href={`/resources/${resource.id}`}>Edit</Link>
+                    <Link className="button-link" href={`/sessions/new?resource=${resource.id}`}>New session</Link>
+                  </div>
                 </div>
                 <p>{resource.description || "No description yet."}</p>
                 <dl className="resource-meta">
