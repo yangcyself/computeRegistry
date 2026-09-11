@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { revokeSession, signOut } from "./actions";
+import { LocalTime } from "./components/local-time";
 import { createClient } from "../lib/supabase/server";
 
 export default async function HomePage() {
@@ -73,7 +74,7 @@ export default async function HomePage() {
                 <dl className="resource-meta">
                   <div><dt>Status</dt><dd>{occupied ? session?.state : resource.status}</dd></div>
                   <div><dt>Version</dt><dd>v{resource.version}</dd></div>
-                  <div><dt>Last heartbeat</dt><dd>{session?.last_heartbeat_at ? new Date(session.last_heartbeat_at).toLocaleString() : "—"}</dd></div>
+                  <div><dt>Last heartbeat</dt><dd><LocalTime value={session?.last_heartbeat_at ?? null} /></dd></div>
                 </dl>
               </article>
             );
