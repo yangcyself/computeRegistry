@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "../../../lib/supabase/server";
 
-export type SessionState = { error?: string };
+export type SessionState = { error?: string; prompt?: string };
 
 export async function createSession(_: SessionState, formData: FormData): Promise<SessionState> {
   const supabase = await createClient();
