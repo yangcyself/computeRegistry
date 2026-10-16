@@ -20,15 +20,30 @@ set search_path = ''
 as $$
 declare
   v_secret text;
+  v_state public.session_state;
+  v_public_status_enabled boolean;
 begin
   if not public.is_compute_admin() then
     raise exception 'admin required' using errcode = '42501';
   end if;
 
-  if not exists (
-    select 1 from public.sessions as s where s.id = p_session_id
-  ) then
+  select s.state, s.public_status_enabled
+    into v_state, v_public_status_enabled
+  from public.sessions as s
+  where s.id = p_session_id
+  for update;
+
+  if not found then
     raise exception 'session not found';
+  end if;
+
+  if v_state not in (
+      'reserved'::public.session_state,
+      'claimed'::public.session_state,
+      'active'::public.session_state
+    ) or not v_public_status_enabled
+  then
+    raise exception 'session is not active';
   end if;
 
   select sis.secret into v_secret
