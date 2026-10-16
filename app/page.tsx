@@ -48,6 +48,7 @@ export default async function HomePage() {
           <h1>Compute Registry</h1>
         </div>
         <div className="topbar-actions">
+          <Link className="secondary-button" href="/settings/security">Security</Link>
           <Link className="button-link" href="/resources/new">Add resource</Link>
           <form action={signOut}><button className="secondary-button" type="submit">Sign out</button></form>
         </div>
