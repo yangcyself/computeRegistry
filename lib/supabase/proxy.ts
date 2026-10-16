@@ -31,7 +31,6 @@ export async function updateSession(request: NextRequest) {
   const isPublic =
     pathname.startsWith("/login") ||
     pathname.startsWith("/auth") ||
-    pathname.startsWith("/api/v1/session") ||
     pathname.startsWith("/api/v1/public-session");
 
   if (!data?.claims && !isPublic) {
