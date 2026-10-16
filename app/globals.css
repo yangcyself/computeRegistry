@@ -20,6 +20,7 @@ button { cursor: pointer; }
 .eyebrow, .label { text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; color: #9da7b3; }
 h1 { margin: 10px 0 16px; font-size: clamp(2.4rem, 6vw, 4.8rem); line-height: .98; }
 h2 { margin: 6px 0 16px; }
+h3 { margin: 0 0 10px; }
 .lede { font-size: 1.05rem; line-height: 1.6; color: #c6ccd4; }
 
 .panel, .resource-card, .auth-card, .empty-state { border: 1px solid #242a31; border-radius: 18px; background: #11151a; }
@@ -36,6 +37,12 @@ h2 { margin: 6px 0 16px; }
 .resource-meta div { padding: 12px; background: #0b0d10; border-radius: 12px; }
 .resource-meta dt { color: #7f8995; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
 .resource-meta dd { margin: 6px 0 0; }
+.compute-usage-panel { margin-top: 14px; padding: 16px; border: 1px solid #242a31; border-radius: 14px; background: #0b0d10; }
+.compute-usage-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 12px; }
+.compute-usage-heading > div { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.compute-usage-heading small { color: #7f8995; }
+.usage-agent { color: #c6ccd4; font-size: .85rem; }
+.compute-usage-panel pre { margin: 0; white-space: pre-wrap; word-break: break-word; color: #d8dee6; font: inherit; line-height: 1.5; }
 
 .resource-form, .session-form, .editor-form { display: grid; gap: 16px; }
 .resource-form input, .resource-form textarea, .session-form input, .auth-card input,
@@ -62,8 +69,10 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 .empty-state { padding: 32px; color: #aab2bc; text-align: center; }
 .session-layout { display: grid; gap: 20px; }
 .prompt-panel pre { white-space: pre-wrap; word-break: break-word; background: #090b0e; border: 1px solid #252b32; border-radius: 12px; padding: 18px; color: #d8dee6; line-height: 1.55; overflow-x: auto; }
+.handoff-section { margin-top: 26px; }
+.handoff-section p { color: #c6ccd4; line-height: 1.6; }
 
 @media (max-width: 700px) {
-  .topbar, .resource-heading, .prompt-heading, .page-heading { align-items: flex-start; flex-direction: column; }
+  .topbar, .resource-heading, .prompt-heading, .page-heading, .compute-usage-heading { align-items: flex-start; flex-direction: column; }
   .resource-meta, .form-grid.two { grid-template-columns: 1fr; }
 }
