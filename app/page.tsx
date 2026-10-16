@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { revokeSession, signOut } from "./actions";
+import { AutoRefresh } from "./components/auto-refresh";
 import { LocalTime } from "./components/local-time";
 import { createClient } from "../lib/supabase/server";
 
@@ -40,6 +41,7 @@ export default async function HomePage() {
 
   return (
     <main className="shell">
+      <AutoRefresh />
       <header className="topbar">
         <div>
           <p className="eyebrow">Personal compute control plane</p>
@@ -97,7 +99,11 @@ export default async function HomePage() {
                         {session.agent_label ? <span className="usage-agent">{session.agent_label}</span> : null}
                       </div>
                       <small>
-                        Updated <LocalTime value={session.compute_usage_updated_at ?? null} />
+                        {session.compute_usage_updated_at ? (
+                          <>Updated <LocalTime value={session.compute_usage_updated_at} /></>
+                        ) : (
+                          "Not reported yet"
+                        )}
                       </small>
                     </div>
                     <pre>{session.compute_usage?.trim() || "No usage report yet."}</pre>
