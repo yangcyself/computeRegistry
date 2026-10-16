@@ -8,7 +8,7 @@ Current Supabase project ref:
 
 `kmulvwluatehngydgehb`
 
-The checked-in baseline migration under `migrations/` was reconstructed from the live project on 2026-09-11, including enums, tables, constraints, indexes, RLS state, triggers, and the private `updated_at` trigger function.
+The checked-in migrations include the database schema, RLS configuration, resource/session RPCs, the server-only public-session gateway, and database-backed rate limiting.
 
 ## Manual setup on a fresh Supabase project
 
@@ -25,13 +25,42 @@ supabase link --project-ref <new-project-ref>
 supabase db push
 ```
 
-4. Run database advisors after schema changes:
+4. Configure the gateway secret as described below.
+5. Run database advisors after schema changes:
 
 ```bash
 supabase db advisors
 ```
 
-The initial migration intentionally enables RLS without client policies. This means the public Data API cannot read or mutate these tables through normal anonymous/authenticated client access until explicit policies are added.
+## Public-session gateway secret
+
+The agent-facing status endpoint is public, but direct anonymous access to the underlying status/report RPCs is revoked. The Next.js server calls protected gateway RPCs with a server-only secret.
+
+Generate a high-entropy value:
+
+```bash
+openssl rand -hex 48
+```
+
+Store the plaintext value in Vercel as `COMPUTE_GATEWAY_SECRET` for Production, Preview, and Development. Never prefix it with `NEXT_PUBLIC_`.
+
+Store only its SHA-256 hash in Supabase:
+
+```bash
+printf '%s' "$COMPUTE_GATEWAY_SECRET" | shasum -a 256
+```
+
+Then run this in the Supabase SQL editor, replacing the placeholder with the resulting hexadecimal hash:
+
+```sql
+insert into compute_private.gateway_config(singleton, secret_hash, updated_at)
+values (true, '<sha256-hex>', now())
+on conflict (singleton) do update
+set secret_hash = excluded.secret_hash,
+    updated_at = now();
+```
+
+Redeploy after changing the Vercel variable. To rotate the secret, generate a new value, update the Vercel variable and database hash, then redeploy. Keep the plaintext out of Git, logs, browser code, and agent prompts.
 
 ## Making future schema changes
 
@@ -61,4 +90,4 @@ If the live database was changed manually outside the repo, inspect and reconcil
 
 ## Secrets
 
-Never commit database passwords, service-role keys, Supabase secret keys, session credentials, or claim tokens. Only public configuration variable names and safe project metadata belong in Git.
+Never commit database passwords, service-role keys, Supabase secret keys, gateway secrets, session credentials, or claim tokens. Only public configuration variable names and safe project metadata belong in Git.
