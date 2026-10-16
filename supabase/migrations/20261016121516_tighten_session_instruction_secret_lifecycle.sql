@@ -1,0 +1,4 @@
+-- Production applied this migration to restrict session-secret retrieval to live,
+-- public-status-enabled sessions. The equivalent final function definition is
+-- maintained in the preceding session encrypted-instruction migration for fresh
+-- database reconstruction.
