@@ -22,12 +22,20 @@ export default async function HomePage() {
 
   const [{ data: resources }, { data: sessions }] = await Promise.all([
     supabase.from("resources").select("*").is("archived_at", null).order("name"),
-    supabase.from("sessions").select("id,resource_id,label,agent_label,state,last_heartbeat_at,created_at,expires_at").order("created_at", { ascending: false }).limit(100),
+    supabase
+      .from("sessions")
+      .select("id,resource_id,label,agent_label,state,last_heartbeat_at,created_at,compute_usage,compute_usage_updated_at")
+      .in("state", ["reserved", "claimed", "active"])
+      .order("created_at", { ascending: false })
+      .limit(100),
   ]);
 
-  const latestByResource = new Map<string, (typeof sessions extends (infer T)[] | null ? T : never)>();
+  type LiveSession = NonNullable<typeof sessions>[number];
+  const liveByResource = new Map<string, LiveSession>();
   for (const session of sessions ?? []) {
-    if (!latestByResource.has(session.resource_id)) latestByResource.set(session.resource_id, session);
+    if (!liveByResource.has(session.resource_id)) {
+      liveByResource.set(session.resource_id, session);
+    }
   }
 
   return (
@@ -48,8 +56,8 @@ export default async function HomePage() {
           <div className="empty-state">No resources yet. Add your first compute resource.</div>
         ) : (
           (resources ?? []).map((resource) => {
-            const session = latestByResource.get(resource.id);
-            const occupied = session && ["reserved", "claimed", "active"].includes(session.state);
+            const session = liveByResource.get(resource.id);
+            const occupied = Boolean(session);
             return (
               <article className="resource-card" key={resource.id}>
                 <div className="resource-heading">
@@ -60,22 +68,41 @@ export default async function HomePage() {
                   </div>
                   <div className="card-actions">
                     <Link className="secondary-button" href={`/resources/${resource.id}`}>Edit</Link>
-                    {occupied && session ? (
-                      <form action={revokeSession}>
-                        <input type="hidden" name="session_id" value={session.id} />
-                        <input type="hidden" name="reason" value="Revoked by registry owner" />
-                        <button className="danger-button" type="submit">Revoke assignment</button>
-                      </form>
-                    ) : null}
-                    <Link className="button-link" href={`/sessions/new?resource=${resource.id}`}>New session</Link>
+                    {session ? (
+                      <>
+                        <Link className="secondary-button" href={`/sessions/${session.id}/handoff`}>Handoff</Link>
+                        <form action={revokeSession}>
+                          <input type="hidden" name="session_id" value={session.id} />
+                          <input type="hidden" name="reason" value="Revoked by registry owner" />
+                          <button className="danger-button" type="submit">Revoke assignment</button>
+                        </form>
+                      </>
+                    ) : (
+                      <Link className="button-link" href={`/sessions/new?resource=${resource.id}`}>New session</Link>
+                    )}
                   </div>
                 </div>
                 <p>{resource.description || "No description yet."}</p>
                 <dl className="resource-meta">
-                  <div><dt>Status</dt><dd>{occupied ? session?.state : resource.status}</dd></div>
+                  <div><dt>Status</dt><dd>{session?.state ?? resource.status}</dd></div>
                   <div><dt>Version</dt><dd>v{resource.version}</dd></div>
                   <div><dt>Last heartbeat</dt><dd><LocalTime value={session?.last_heartbeat_at ?? null} /></dd></div>
                 </dl>
+
+                {session ? (
+                  <section className="compute-usage-panel">
+                    <div className="compute-usage-heading">
+                      <div>
+                        <span className="label">Compute usage</span>
+                        {session.agent_label ? <span className="usage-agent">{session.agent_label}</span> : null}
+                      </div>
+                      <small>
+                        Updated <LocalTime value={session.compute_usage_updated_at ?? null} />
+                      </small>
+                    </div>
+                    <pre>{session.compute_usage?.trim() || "No usage report yet."}</pre>
+                  </section>
+                ) : null}
               </article>
             );
           })
