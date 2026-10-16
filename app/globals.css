@@ -11,6 +11,7 @@ body { min-height: 100vh; }
 a { color: inherit; }
 button, input, textarea, select { font: inherit; }
 button { cursor: pointer; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 
 .shell { width: min(1100px, calc(100% - 32px)); margin: 0 auto; padding: 56px 0 80px; }
 .narrow-shell { width: min(900px, calc(100% - 32px)); }
@@ -68,9 +69,22 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 .error-text { color: #ff8888; }
 .empty-state { padding: 32px; color: #aab2bc; text-align: center; }
 .session-layout { display: grid; gap: 20px; }
-.prompt-panel pre { white-space: pre-wrap; word-break: break-word; background: #090b0e; border: 1px solid #252b32; border-radius: 12px; padding: 18px; color: #d8dee6; line-height: 1.55; overflow-x: auto; }
+.prompt-panel pre,
+.secret-result pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #090b0e;
+  border: 1px solid #252b32;
+  border-radius: 12px;
+  padding: 18px;
+  color: #d8dee6;
+  line-height: 1.55;
+  overflow-x: auto;
+}
 .handoff-section { margin-top: 26px; }
 .handoff-section p { color: #c6ccd4; line-height: 1.6; }
+.security-panel > p { color: #c6ccd4; line-height: 1.6; }
+.secret-result { margin-top: 20px; padding-top: 18px; border-top: 1px solid #242a31; }
 
 @media (max-width: 700px) {
   .topbar, .resource-heading, .prompt-heading, .page-heading, .compute-usage-heading { align-items: flex-start; flex-direction: column; }
