@@ -44,6 +44,10 @@ export default async function SessionHandoffPage({
     session.public_status_enabled && session.public_status_id
       ? `${proto}://${host}/api/v1/public-session/${session.public_status_id}/status?v=${resource.version}`
       : null;
+  const intervalMinutes = Math.max(
+    1,
+    Math.round(session.heartbeat_interval_seconds / 60),
+  );
 
   return (
     <main className="shell narrow-shell">
@@ -71,11 +75,31 @@ export default async function SessionHandoffPage({
 
         {statusUrl ? (
           <section className="handoff-section">
-            <h3>Assignment status</h3>
-            <p><strong>Status URL:</strong></p>
+            <h3>Heartbeat and compute usage report</h3>
+            <p>
+              About every {intervalMinutes} minutes, send an HTTP POST to this
+              non-secret URL:
+            </p>
             <pre>{statusUrl}</pre>
-            <p><strong>Check interval:</strong> about {Math.max(1, Math.round(session.heartbeat_interval_seconds / 60))} minutes</p>
-            <p><strong>Possible status values:</strong> continue, instructions_changed, stop_using_resource</p>
+            <p>Use a JSON body with a <code>compute_usage</code> string:</p>
+            <pre>{`{
+  "compute_usage": "Busy: training experiment 14\nGPU job is running"
+}`}</pre>
+            <p>
+              The report must be at most 8 lines. A simple description such as
+              <code> Busy: training</code> or <code> Idle: waiting for work</code>
+              is enough. Do not include passwords, tokens, private keys, or other
+              sensitive information.
+            </p>
+            <p>
+              Parse the response action: <code>continue</code>,
+              <code> instructions_changed</code>, or
+              <code> stop_using_resource</code>.
+            </p>
+            <p>
+              If instructions changed, ask the owner for a new Compute Registry
+              handoff. If told to stop, stop using the resource immediately.
+            </p>
           </section>
         ) : null}
       </CopyPanel>
